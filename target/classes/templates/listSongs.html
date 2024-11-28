@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>Song List</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f5f5f5;
+            margin: 0;
+            padding: 0;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 50px auto;
+            background: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        header h1 {
+            font-size: 24px;
+            color: #007bff;
+        }
+
+        .alert {
+            padding: 10px;
+            margin-bottom: 20px;
+            border: 1px solid #f5c2c7;
+            border-radius: 4px;
+            background-color: #f8d7da;
+            color: #842029;
+            text-align: center;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+
+        table thead {
+            background-color: #e3f2fd;
+        }
+
+        table th, table td {
+            padding: 10px;
+            text-align: left;
+            border: 1px solid #ddd;
+        }
+
+        table tbody tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+
+        table tbody tr:hover {
+            background-color: #f1f1f1;
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 8px 12px;
+            font-size: 14px;
+            color: #fff;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            text-decoration: none;
+        }
+
+        .btn-primary {
+            background-color: #007bff;
+        }
+
+        .btn-primary:hover {
+            background-color: #0056b3;
+        }
+
+        .btn-danger {
+            background-color: #dc3545;
+        }
+
+        .btn-danger:hover {
+            background-color: #b02a37;
+        }
+
+        .btn-success {
+            background-color: #28a745;
+        }
+
+        .btn-success:hover {
+            background-color: #218838;
+        }
+
+        .form-label {
+            font-weight: bold;
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        .form-select,
+        .form-control {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 15px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+
+        .form-control:focus,
+        .form-select:focus {
+            outline: none;
+            border-color: #007bff;
+            box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
+        }
+
+        .text-end {
+            text-align: end;
+        }
+
+        h2 {
+            font-size: 20px;
+            color: #28a745;
+            margin-top: 30px;
+        }
+
+        .p-3 {
+            padding: 15px;
+            border: 1px solid #ddd;
+            background-color: #fff;
+            border-radius: 4px;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <header>
+        <h1>Song List</h1>
+    </header>
+    <!-- Error Message -->
+    <div th:if="${error}" class="alert">
+        <span th:text="${error}"></span>
+    </div>
+    <main>
+        <!-- Song Table -->
+        <table>
+            <thead>
+            <tr>
+                <th>Title</th>
+                <th>Track ID</th>
+                <th>Genre</th>
+                <th>Release Year</th>
+                <th>Album</th>
+                <th>Rating</th>
+                <th>Actions</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="song : ${songs}">
+                <td th:text="${song.title}"></td>
+                <td th:text="${song.trackId}"></td>
+                <td th:text="${song.genre}"></td>
+                <td th:text="${song.releaseYear}"></td>
+                <td th:text="${song.album != null ? song.album.name : 'No album'}"></td>
+                <td th:text="${song.rating != null && song.getRatings().size() != 0 ? song.rating : 'No ratings yet'}"></td>
+                <td>
+                    <a th:href="@{'/songs/edit/' + ${song.id}}" class="btn btn-primary">Edit</a>
+                    <a th:href="@{'/songs/delete/' + ${song.id}}" class="btn btn-danger"
+                       onclick="return confirm('Are you sure?')">Delete</a>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+        <!-- Add New Song -->
+        <div class="text-end">
+            <a href="/songs/add" class="btn btn-success">Add New Song</a>
+        </div>
+        <!-- Add Rating Form -->
+        <h2>Rate a Song</h2>
+        <form action="/artist" method="get" class="p-3">
+            <div>
+                <label for="songSelection" class="form-label">Select a Song:</label>
+                <select id="songSelection" name="trackId" class="form-select" required>
+                    <option th:each="song : ${songs}" th:value="${song.trackId}" th:text="${song.title}"></option>
+                </select>
+            </div>
+            <div>
+                <label for="rating" class="form-label">Rating:</label>
+                <input type="number" id="rating" name="rating" class="form-control" min="1" max="10" value="5" required>
+            </div>
+            <button type="submit" class="btn btn-success">Submit Rating</button>
+        </form>
+    </main>
+</div>
+</body>
+</html>

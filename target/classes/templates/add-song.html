@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8">
+    <title>Add or Edit Song</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f5f5f5;
+            margin: 0;
+            padding: 0;
+        }
+
+        .container {
+            max-width: 600px;
+            margin: 50px auto;
+            background: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        h1 {
+            text-align: center;
+            margin-bottom: 20px;
+            font-size: 24px;
+            color: #333;
+        }
+
+        .form-label {
+            font-weight: bold;
+            margin-bottom: 5px;
+            display: block;
+            color: #555;
+        }
+
+        .form-control,
+        .form-select {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 15px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            font-size: 14px;
+            background-color: #fff;
+        }
+
+        .form-control:focus,
+        .form-select:focus {
+            outline: none;
+            border-color: #007bff;
+            box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
+        }
+
+        .btn {
+            padding: 10px 20px;
+            font-size: 14px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        .btn-secondary {
+            background-color: #6c757d;
+            color: #fff;
+        }
+
+        .btn-secondary:hover {
+            background-color: #5a6268;
+        }
+
+        .btn-primary {
+            background-color: #007bff;
+            color: #fff;
+        }
+
+        .btn-primary:hover {
+            background-color: #0056b3;
+        }
+
+        .d-flex {
+            display: flex;
+            justify-content: space-between;
+        }
+
+        a {
+            text-decoration: none;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h1 th:text="${song != null} ? 'Edit Song' : 'Add New Song'"></h1>
+    <form th:action="${song != null ? '/songs/edit/' + song.id : '/songs/add'}" method="post">
+        <div>
+            <label for="title" class="form-label">Title:</label>
+            <input type="text" id="title" name="title" th:value="${song != null} ? ${song.title} : ''" class="form-control" required/>
+        </div>
+        <div>
+            <label for="trackId" class="form-label">Track ID:</label>
+            <input type="text" id="trackId" name="trackId" th:value="${song != null} ? ${song.trackId} : ''" class="form-control" required/>
+        </div>
+        <div>
+            <label for="genre" class="form-label">Genre:</label>
+            <input type="text" id="genre" name="genre" th:value="${song != null} ? ${song.genre} : ''" class="form-control" required/>
+        </div>
+        <div>
+            <label for="releaseYear" class="form-label">Release Year:</label>
+            <input type="number" id="releaseYear" name="releaseYear" th:value="${song != null} ? ${song.releaseYear} : ''" class="form-control" required/>
+        </div>
+        <div>
+            <label for="album" class="form-label">Album:</label>
+            <select id="album" name="albumId" class="form-select" required>
+                <option value="" disabled th:if="${song == null}" selected>Choose an album</option>
+                <option th:each="album : ${albums}"
+                        th:value="${album.id}"
+                        th:selected="${song != null} ? ${album.id == song.album.id} : false"
+                        th:text="${album.name}">
+                </option>
+            </select>
+        </div>
+        <div class="d-flex">
+            <a href="/songs" class="btn btn-secondary">Back to Songs</a>
+            <button type="submit" class="btn btn-primary">Save</button>
+        </div>
+    </form>
+</div>
+</body>
+</html>
