@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>Song List</title>
+    <style>
+        body { font-family: Arial, sans-serif; background-color: #f9f9f9; padding: 20px; }
+        h1 { color: #333; text-align: center; }
+        form, table { margin-bottom: 20px; }
+        label, select, input, button { margin-top: 10px; display: block; }
+        table { width: 100%; border-collapse: collapse; }
+        th, td { border: 1px solid #ddd; padding: 8px; text-align: left; }
+        th { background-color: #f2f2f2; }
+        .btn { padding: 10px 15px; text-decoration: none; border-radius: 5px; margin-top: 10px; display: inline-block; background-color: black; color: white; }
+    </style>
+</head>
+<body>
+<nav>
+    <a href="/">Song List</a>
+    <a href="/login">Login</a>
+    <a href="/logout">Logout</a>
+</nav>
+
+<div class="container">
+    <!-- Error message -->
+    <div>
+        <p style="color: red;" th:if="${error}" th:text="${error}"></p>
+    </div>
+
+    <!-- Filter form -->
+    <form action="/songs" method="get">
+        <label for="genreFilter">Filter by Genre:</label>
+        <select id="genreFilter" name="genre" class="form-select">
+            <option value="All">All</option>
+            <option th:each="genre : ${genres}" th:value="${genre}" th:text="${genre}"></option>
+        </select>
+
+        <label for="albumFilter">Filter by Album:</label>
+        <select id="albumFilter" name="albumId" class="form-select">
+            <option value="">All</option>
+            <option th:each="album : ${albums}" th:value="${album.id}" th:text="${album.name}"></option>
+        </select>
+
+        <button type="submit" class="btn">Filter</button>
+    </form>
+
+    <!-- Song list table -->
+    <table>
+        <thead>
+        <tr>
+            <th>Title</th>
+            <th>Track ID</th>
+            <th>Genre</th>
+            <th>Release Year</th>
+            <th>Album</th>
+            <th>Rating</th>
+            <th>Actions</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="song : ${songs}">
+            <td th:text="${song.title}"></td>
+            <td th:text="${song.trackId}"></td>
+            <td th:text="${song.genre}"></td>
+            <td th:text="${song.releaseYear}"></td>
+            <td th:text="${song.album != null ? song.album.name : 'No album'}"></td>
+            <td th:text="${song.rating != null ? song.rating : 'No ratings'}"></td>
+            <td>
+                <a th:href="@{'/songs/edit/' + ${song.id}}" class="btn">Edit</a>
+                <a th:href="@{'/songs/delete/' + ${song.id}}" class="btn" onclick="return confirm('Are you sure?')">Delete</a>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+
+    <!-- Add New Song button -->
+    <div style="text-align: right; margin-top: 20px;">
+        <a href="/songs/add" class="btn">Add New Song</a>
+    </div>
+
+    <!-- Rate a Song form -->
+    <h2>Rate a Song</h2>
+    <form action="/artist" method="get">
+        <label for="songSelection">Select a Song:</label>
+        <select id="songSelection" name="trackId" class="form-select" required>
+            <option th:each="song : ${songs}" th:value="${song.trackId}" th:text="${song.title}"></option>
+        </select>
+
+        <label for="rating">Rating (1-10):</label>
+        <input type="number" id="rating" name="rating" class="form-control" min="1" max="10" value="5" required>
+
+        <label for="review">Review:</label>
+        <input type="text" id="review" name="review" class="form-control" placeholder="Write a review" required>
+
+        <button type="submit" class="btn">Submit Rating</button>
+    </form>
+</div>
+</body>
+</html>

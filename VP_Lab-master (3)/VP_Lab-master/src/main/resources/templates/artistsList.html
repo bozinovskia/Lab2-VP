@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>Select Artist</title>
+    <style>
+        body { font-family: Arial, sans-serif; background-color: #f9f9f9; padding: 20px; }
+        h1 { color: #333; text-align: center; }
+        h3 { color: #555; }
+        div { margin-bottom: 10px; }
+        label { margin-left: 10px; }
+        button, a { margin-top: 20px; padding: 10px 15px; color: white; text-decoration: none; background-color: #007bff; border-radius: 5px; display: inline-block; }
+        a { background-color: #6c757d; }
+    </style>
+</head>
+<body>
+<h1>Select an Artist for Song: <span th:text="${song.title}"></span></h1>
+
+<!-- Artist Selection Form -->
+<form th:action="@{/songs/details}" method="post">
+    <input type="hidden" name="trackId" th:value="${song.trackId}" />
+    <h3>Available Artists:</h3>
+    <div th:each="artist : ${artists}">
+        <input type="radio" name="artistId" th:value="${artist.id}" required />
+        <label th:text="${artist.firstName + ' ' + artist.lastName}"></label>
+    </div>
+    <button type="submit">Add Artist</button>
+</form>
+
+<a href="/songs">Back to Songs</a>
+</body>
+</html>
